@@ -1,0 +1,16 @@
+.error {
+  text-align: center;
+  margin: 100px 0 200px;
+}
+
+.error h1 {
+  font-size: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.error svg {
+  margin-right: 1rem;
+}

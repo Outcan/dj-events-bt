@@ -1,56 +1,33 @@
 import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import Link from "next/link";
+import Layout from "@/components/Layout";
+import EventItem from "@/components/EventItem";
 
-export default function HomePage() {
+import { API_URL } from "@/config/index";
+
+export default function HomePage({ events }) {
+  console.log(events);
   return (
-    <div className={styles.container}>
+    <Layout>
       <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
+        <meta name="time" content="15:10" />
       </Head>
-
-      <main className={styles.main}>
-        <h1 className={styles.title}>Hello</h1>
-
-        <p className={styles.description}>
-          Get started by editing <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a href="https://github.com/vercel/next.js/tree/master/examples" className={styles.card}>
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>Instantly deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+      <h1>Upcoming Events</h1>
+      {events.length === 0 && <h3>No events to show</h3>}
+      {events.map((event) => (
+        <EventItem key={event.id} event={event} />
+      ))}
+      {events.length > 0 && (
+        <Link href="/events">
+          <a className="btn-secondary">View all events</a>
+        </Link>
+      )}
+    </Layout>
   );
+}
+
+export async function getStaticProps() {
+  const res = await fetch(`${API_URL}/events?_sort=date:ASC&_limit=3`, { method: "GET" });
+  const events = await res.json();
+  return { props: { events }, revalidate: 1 };
 }
